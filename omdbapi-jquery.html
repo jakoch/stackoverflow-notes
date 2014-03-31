@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Sample</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script>
+    $( document ).ready(function() {
+        $("#SampleSearchButton").click(function() {
+            getImdbInfo($("#title").val());
+        })
+    });
+
+    // The function below takes the entered title and searchs imdb for a match then it displays as followed
+
+    function getImdbInfo(title) {
+        $.ajax({
+          url: "http://www.omdbapi.com/?s=" + title,
+          cache: false,
+          dataType: "json",
+          success: function(data) {
+                // you get an object for iteration, the keys are Title, Type, Year, imdbID
+                //console.log(data);
+
+                var str = '<table>';
+                str += "<thead><th>Index</th><th>Title</th><th>Type</th><th>Year</th><th>imdbID</th></thead>"
+
+                // iterate over the data result set
+                $.each(data.Search, function(index, element) {
+                    str += "<tr>";
+                    str += "<td>" + index + "</td>";
+                    str += "<td>" + element.Title + "</td>";
+                    str += "<td>" + element.Type + "</td>";
+                    str += "<td>" + element.Year + "</td>";
+                    str += "<td>" + element.imdbID + "</td>";
+                    str += "</tr>";
+                });
+
+                str += '</table>';
+
+                // insert the html
+                $("#SampleResults").html(str);
+          },
+          error: function (request, status, error) { alert(status + ", " + error); }
+        });
+    }
+    </script>
+</head>
+<body>
+
+
+<!-- search textbox -->
+<input type="text" id="title" placeholder="heat" value="heat">
+
+<!-- do search button -->
+<button type="text" id="SampleSearchButton">Search</button>
+
+<!-- display results container -->
+<div id="SampleResults"></div>
+</body>
+</html>
