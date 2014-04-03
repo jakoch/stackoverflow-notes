@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Sample</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script>
+    $( document ).ready(function() {
+        $("#SampleSearchButton").click(function() {
+            getImdbInfo($("#title").val());
+        })
+    });
+
+    // The function below takes the entered title and searchs imdb for a match then it displays as followed
+
+    function getImdbInfo(title) {
+         $.ajax({
+          type: 'GET',
+          url: "imdb-fetcher.php?title=" + title,
+          dataType: "json",
+          success: function(data) {
+                // you get an object for iteration, the keys are Title, Type, Year, imdbID
+                console.log(data);
+
+                // table for title_popular
+                var str = '<table>';
+                str += "<thead><th>Index</th><th>id</th><th>title</th><th>title_desc</th><th>year</th><th>description</th></thead>";
+
+				$.each(data.title_popular, function(index, element) {
+				    str += "<tr>";
+	                str += "<td>" + index + "</td>";
+				    $.each(element, function(key, element) {
+	                    str += "<td>" + element + "</td>";
+                	});
+                	str += "</tr>";
+				});
+
+                str += '</table>';
+
+ 				// table for title_exact
+ 				str += '<table>';
+                str += "<thead><th>Index</th><th>id</th><th>title</th><th>title_desc</th><th>year</th><th>description</th></thead>";
+
+                $.each(data.title_exact, function(index, element) {
+				    str += "<tr>";
+	                str += "<td>" + index + "</td>";
+				    $.each(element, function(key, element) {
+	                    str += "<td>" + element + "</td>";
+                	});
+                	str += "</tr>";
+				});
+
+
+                // insert the html
+                $("#SampleResults").html(str);
+          },
+          error: function (request, status, error) { alert(status + " - " + error); }
+        });
+    }
+    </script>
+</head>
+<body>
+
+
+<!-- search textbox -->
+<input type="text" id="title" placeholder="Enter Name for search">
+
+<!-- do search button -->
+<button type="text" id="SampleSearchButton">Search</button>
+
+<!-- display results container -->
+<div id="SampleResults"></div>
+</body>
+</html>
